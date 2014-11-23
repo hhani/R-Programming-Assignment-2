@@ -1,0 +1,52 @@
+#These are two functions that will cache a square matrix into an Object and then solve for its
+#inverse. If done more than once, the second function will retrieve the inverse from without 
+#redoing the computation.
+
+
+#This function takes a Matrix and stores it in an object
+makeCacheMatrix <- function(x = matrix())  {
+    #Cache is the storage value, with a NULL default value
+    Cache <- NULL
+    
+    #setMatrix will superwrite the values of the storage matrix to a different environment  
+    setMatrix <- function(Storage){
+        x <<- Storage
+        Cache <<- NULL
+    }
+    
+    #Retrieves the matrix from stored memory
+    getMatrix <- function() x
+
+    #sets Cache to the inverse matrix
+    setInverse <- function(Inverse) Cache <<- Inverse
+    
+    #Retrieves Cache, the inverse of the matrix, from memory; or NULL if it hasn't been evaluated
+    getInverse <- function() Cache
+    
+    #Stores the function as a list, completing the Objectification of the function
+    list(setMatrix = setMatrix, getMatrix = getMatrix, setInverse = setInverse, getInverse = getInverse)
+}
+
+#Solves for the Matrix; if already used, retrieves it
+cacheSolve <- function(x, ...){
+    #Retrieves the Cache matrix
+    Cache <- x$getInverse()
+    
+    #Checks if Cache has already been assigned; if it has, it will retrieve it from cache
+    if(!is.null(Cache)) {
+        message("getting cached data")
+        return(Cache)
+    }
+    
+    #Retrieves the Matrix, stores it in Data
+    Data <- x$getMatrix()
+    
+    #Computes the inverse of the matrix, stores it in cache
+    Cache <- solve(Data)
+    
+    #Sets the value of Inverse in the Matrix Cache Object
+    x$setInverse(Cache)
+    
+    #Returns the Inverse Matrix
+    Cache
+}
